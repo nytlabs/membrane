@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Membrane</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<!--fonts-->
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway:300,500' rel='stylesheet' type='text/css'>
+
+
+<!--css-->
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/styles.css">
+
+<!--js-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+
+
+		$(document).on("mouseup touchend", function(e) {
+			s = window.getSelection();
+			
+			if (s.toString().length > 0) { //if text was selected 
+				$('#selection').val(s);
+
+				if (e.originalEvent.touches) {
+					//mobile positioning
+					$('#message').css('position', 'fixed');
+					$('#message').css('bottom', '0px'); //position hidden success message
+
+					$('#chooser').css('position', 'fixed');
+					$('#chooser').css('top', '0px');
+					$('#chooser').css('left', '0px');
+					$('#chooser').css('width', '100%');
+					$('#chooser').css('z-index', '2000');
+				}
+				else {
+					//desktop positioning
+					$('#chooser').css('top', e.pageY + 'px');
+					$('#chooser').css('left', e.pageX + 10 + 'px');
+				}
+				
+				$('#chooser').show();
+			}
+			else { //hide drop down menu on click outside of menu
+				var menu = $("#chooser");
+			    if (!menu.is(e.target) // if the target of the click isn't the menu...
+			        && menu.has(e.target).length === 0) // ... nor a descendant of the menu
+			    {
+			        menu.hide();
+			        $('#chooser > ul').hide();
+			    }
+			}
+		})
+
+		//open drop down menu
+		$('#chooser').on("click", "h2", function(e) {
+			$('#chooser > ul').slideToggle();
+		})
+
+		//submit on selection of response
+		$('#chooser').on("click", "li", function() {
+		
+			/*****************************
+			SUBMISSION CODE SHOULD GO HERE
+			Selected text is accessible via $('#selection').val()
+			******************************/
+			
+			$('#chooser').hide();
+			$('#message').slideDown(500).delay(4000).slideUp(500);
+		})
+
+
+		//click on active signal to reveal / hide responses
+		$('.active-signal').on("click", function(e) {
+			var p = $(this).parents('.para');
+			var s = $(this).attr('slug');
+			var r = $(document).find('.response[slug="'+s+'"]');
+			$(r).children('.response-header').html($(this).text());
+			if ($(r).css('display') == 'none') { //show the requested response if it's hidden
+				$(r).slideDown(); 
+				if (isElementInViewport(r) == false) { //if response is out of viewport, scroll down
+					 $('html,body').animate({scrollTop: $(r).offset().top - 150}, 500);
+				}
+			}
+			else { //hide the requested response if it's shown
+				$(p).nextUntil('p').slideUp();
+			}
+			
+		})
+
+		function isElementInViewport (el) {
+		    if (typeof jQuery === "function" && el instanceof jQuery) {
+		        el = el[0];
+		    }
+
+		    var rect = el.getBoundingClientRect();
+
+		    return (
+		        rect.top >= 0 &&
+		        rect.left >= 0 &&
+		        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) - 75 && /*or $(window).height() */
+		        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+		    );
+		}
+		
+	});
+	
+</script>
+<body>
+
+<!--message, hidden-->
+<div id="message">Thanks for your feedback! Your response has been submitted to the author</div>
+
+<!--membrane header-->
+<div id="header">
+	<div class="left"><a href="home.html">Membrane</a></div>
+</div>
+
+<!--main content area-->
+<div id="main">
+	<h1>Headline</h1>
+
+	
+	<p class="para">
+	Over the last few months, we at <a title="View response to 3 questions" class="active-signal" slug="myslug">The New York Times's R&D Lab</a> have been developing Membrane, which is an experiment in permeable publishing.</p>
+
+		<!--initially collapsed responses to above paragraph-->
+		<div class="response para" slug="myslug">
+			<h2 class="response-header"></h2>
+			<h3>Questions: What?</h3>
+			<p>A <a title="View response to 14 questions" class="active-signal" slug="myslug2">team</a> that looks beyond the next product cycle, identifying trends and technologies that will emerge in the next three to five years.</p>
+		</div>
+
+			<!--initially collapsed responses to above paragraph-->
+			<div class="response para" slug="myslug2">
+				<h2 class="response-header"></h2>
+				<h3>Questions: Who?</h3>
+				<p>The R&D Lab is: Matt Boggie, Alexis Lloyd, Jane Friedhoff, Noah Feehan, Nik Hanselmann, and Mike Dewar.</p>
+			</div>
+
+
+	<p class="para">Membrane empowers readers with two abilities. The first is that they can highlight any piece of text within the article, select a question they want to ask, and submit that question to the writer. The second is that they can browse, inline, other user questions that have been answered by the writer. In this way, the article becomes a channel through which questions can be asked, responses can be given, and relationships can be developed.</p>
+
+	<h2>Subheading</h2>
+
+	<a class="indicator" title="You have submitted feedback on this paragraph">2</a>
+	<p class="para">
+	Donec id elit non mi porta gravida at eget metus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Nulla vitae elit libero, a pharetra augue.
+	</p>
+
+
+	<div id="chooser">
+		<h2>Respond to this selection</h2>
+		<ul>
+			<li><a href="#" data-val="who">Who</a></li>
+			<li><a href="#" data-val="what">What</a></li>
+			<li><a href="#" data-val="when">When</a></li>
+			<li><a href="#" data-val="where">Where</a></li>
+			<li><a href="#" data-val="why">Why</a></li>
+			<li><a href="#" data-val="dispute">Dispute</a></li>
+		</ul>
+		<form>
+			<input type="hidden" id="selection" value="" />
+		</form>
+	</div>
+
+	 <div id="footer">
+        <div id="rnd-logo"><a href="http://www.nytlabs.com"><img src="img/nytlabs.png" /></a></div>
+        <div id="about">&copy; 2015 The New York Times &nbsp;|&nbsp; <a href="#">About Membrane</a></div>
+        <br class="clear" />
+    </div>
+
+
+
+</div>
+
+
+</body>
+</html>
